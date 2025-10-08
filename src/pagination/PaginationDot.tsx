@@ -1,26 +1,35 @@
 import React, { PureComponent } from 'react';
-import { View, Animated, Easing, TouchableOpacity, ViewPropTypes, ViewStyle } from 'react-native';
-import PropTypes from 'prop-types';
+import { Animated, Easing, TouchableOpacity, ViewStyle, StyleProp } from 'react-native';
 import styles from './Pagination.style';
 
-export default class PaginationDot extends PureComponent {
+interface PaginationDotProps {
+    inactiveOpacity: number;
+    inactiveScale: number;
+    active?: boolean;
+    activeOpacity?: number;
+    carouselRef?: any;
+    color?: string;
+    containerStyle?: StyleProp<ViewStyle>;
+    inactiveColor?: string;
+    inactiveStyle?: StyleProp<ViewStyle>;
+    index?: number;
+    style?: StyleProp<ViewStyle>;
+    tappable?: boolean;
+    animatedDuration?: number;
+    animatedFriction?: number;
+    animatedTension?: number;
+    delayPressInDot?: number;
+}
 
-    static propTypes = {
-        inactiveOpacity: PropTypes.number.isRequired,
-        inactiveScale: PropTypes.number.isRequired,
-        active: PropTypes.bool,
-        activeOpacity: PropTypes.number,
-        carouselRef: PropTypes.object,
-        color: PropTypes.string,
-        containerStyle: ViewPropTypes ? ViewPropTypes.style : ViewStyle,
-        inactiveColor: PropTypes.string,
-        inactiveStyle: ViewPropTypes ? ViewPropTypes.style : ViewStyle,
-        index: PropTypes.number,
-        style: ViewPropTypes ? ViewPropTypes.style : ViewStyle,
-        tappable: PropTypes.bool
-    };
+interface PaginationDotState {
+    animColor: Animated.Value;
+    animOpacity: Animated.Value;
+    animTransform: Animated.Value;
+}
 
-    constructor (props) {
+export default class PaginationDot extends PureComponent<PaginationDotProps, PaginationDotState> {
+
+    constructor (props: PaginationDotProps) {
         super(props);
         this.state = {
             animColor: new Animated.Value(0),
@@ -35,7 +44,7 @@ export default class PaginationDot extends PureComponent {
         }
     }
 
-    componentDidUpdate (prevProps) {
+    componentDidUpdate (prevProps: PaginationDotProps) {
         if (prevProps.active !== this.props.active) {
             this._animate(this.props.active ? 1 : 0);
         }

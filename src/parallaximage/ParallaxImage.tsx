@@ -1,35 +1,40 @@
 // Parallax effect inspired by https://github.com/oblador/react-native-parallax/
 
 import React, { Component } from 'react';
-import { View, ViewPropTypes, Image, Animated, Easing, ActivityIndicator, findNodeHandle, ViewStyle } from 'react-native';
-import PropTypes from 'prop-types';
+import { View, Image, Animated, Easing, ActivityIndicator, findNodeHandle, ViewStyle, StyleProp, ImageProps } from 'react-native';
 import styles from './ParallaxImage.style';
 
-export default class ParallaxImage extends Component {
-
-    static propTypes = {
-        ...Image.propTypes,
-        carouselRef: PropTypes.object, // passed from <Carousel />
-        itemHeight: PropTypes.number, // passed from <Carousel />
-        itemWidth: PropTypes.number, // passed from <Carousel />
-        scrollPosition: PropTypes.object, // passed from <Carousel />
-        sliderHeight: PropTypes.number, // passed from <Carousel />
-        sliderWidth: PropTypes.number, // passed from <Carousel />
-        vertical: PropTypes.bool, // passed from <Carousel />
-        containerStyle: ViewPropTypes ? ViewPropTypes.style : ViewStyle,
-        dimensions: PropTypes.shape({
-            width: PropTypes.number,
-            height: PropTypes.number
-        }),
-        fadeDuration: PropTypes.number,
-        parallaxFactor: PropTypes.number,
-        showSpinner: PropTypes.bool,
-        spinnerColor: PropTypes.string,
-        AnimatedImageComponent: PropTypes.oneOfType([
-            PropTypes.func,
-            PropTypes.object
-        ])
+interface ParallaxImageProps extends ImageProps {
+    carouselRef?: any;
+    itemHeight?: number;
+    itemWidth?: number;
+    scrollPosition?: Animated.Value;
+    sliderHeight?: number;
+    sliderWidth?: number;
+    vertical?: boolean;
+    containerStyle?: StyleProp<ViewStyle>;
+    dimensions?: {
+        width: number;
+        height: number;
     };
+    fadeDuration?: number;
+    parallaxFactor?: number;
+    showSpinner?: boolean;
+    spinnerColor?: string;
+    AnimatedImageComponent?: any;
+}
+
+interface ParallaxImageState {
+    offset: number;
+    width: number;
+    height: number;
+    status: number;
+    animOpacity: Animated.Value;
+}
+
+export default class ParallaxImage extends Component<ParallaxImageProps, ParallaxImageState> {
+    _mounted?: boolean;
+    _container?: any;
 
     static defaultProps = {
         containerStyle: {},
@@ -40,7 +45,7 @@ export default class ParallaxImage extends Component {
         AnimatedImageComponent: Animated.Image
     }
 
-    constructor (props) {
+    constructor (props: ParallaxImageProps) {
         super(props);
         this.state = {
             offset: 0,
@@ -105,7 +110,7 @@ export default class ParallaxImage extends Component {
         }
     }
 
-    _onLoad (event) {
+    _onLoad (event: any) {
         const { animOpacity } = this.state;
         const { fadeDuration, onLoad } = this.props;
 
@@ -131,7 +136,7 @@ export default class ParallaxImage extends Component {
     }
 
     // If arg is missing from method signature, it just won't be called
-    _onError (event) {
+    _onError (event: any) {
         const { onError } = this.props;
 
         this.setState({ status: 4 });

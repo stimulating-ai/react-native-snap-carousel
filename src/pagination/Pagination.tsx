@@ -1,38 +1,37 @@
-import React, { PureComponent } from 'react';
-import { I18nManager, Platform, View, ViewPropTypes, ViewStyle } from 'react-native';
-import PropTypes from 'prop-types';
+import React, { PureComponent, ReactElement } from 'react';
+import { I18nManager, Platform, View, ViewStyle, StyleProp } from 'react-native';
 import PaginationDot from './PaginationDot';
 import styles from './Pagination.style';
 
 const IS_IOS = Platform.OS === 'ios';
 const IS_RTL = I18nManager.isRTL;
 
-export default class Pagination extends PureComponent {
+interface PaginationProps {
+    activeDotIndex: number;
+    dotsLength: number;
+    activeOpacity?: number;
+    carouselRef?: any;
+    containerStyle?: StyleProp<ViewStyle>;
+    dotColor?: string;
+    dotContainerStyle?: StyleProp<ViewStyle>;
+    dotElement?: ReactElement;
+    dotStyle?: StyleProp<ViewStyle>;
+    inactiveDotColor?: string;
+    inactiveDotElement?: ReactElement;
+    inactiveDotOpacity?: number;
+    inactiveDotScale?: number;
+    inactiveDotStyle?: StyleProp<ViewStyle>;
+    renderDots?: (activeDotIndex: number, dotsLength: number, context: any) => ReactElement;
+    tappableDots?: boolean;
+    vertical?: boolean;
+    accessibilityLabel?: string;
+    animatedDuration?: number;
+    animatedFriction?: number;
+    animatedTension?: number;
+    delayPressInDot?: number;
+}
 
-    static propTypes = {
-        activeDotIndex: PropTypes.number.isRequired,
-        dotsLength: PropTypes.number.isRequired,
-        activeOpacity: PropTypes.number,
-        carouselRef: PropTypes.object,
-        containerStyle: ViewPropTypes ? ViewPropTypes.style : ViewStyle,
-        dotColor: PropTypes.string,
-        dotContainerStyle: ViewPropTypes ? ViewPropTypes.style : ViewStyle,
-        dotElement: PropTypes.element,
-        dotStyle: ViewPropTypes ? ViewPropTypes.style : ViewStyle,
-        inactiveDotColor: PropTypes.string,
-        inactiveDotElement: PropTypes.element,
-        inactiveDotOpacity: PropTypes.number,
-        inactiveDotScale: PropTypes.number,
-        inactiveDotStyle: ViewPropTypes ? ViewPropTypes.style : ViewStyle,
-        renderDots: PropTypes.func,
-        tappableDots: PropTypes.bool,
-        vertical: PropTypes.bool,
-        accessibilityLabel: PropTypes.string,
-        animatedDuration: PropTypes.number,
-        animatedFriction: PropTypes.number,
-        animatedTension: PropTypes.number,
-        delayPressInDot: PropTypes.number,
-    };
+export default class Pagination extends PureComponent<PaginationProps> {
 
     static defaultProps = {
         inactiveDotOpacity: 0.5,
@@ -45,7 +44,7 @@ export default class Pagination extends PureComponent {
         delayPressInDot: 0,
     }
 
-    constructor (props) {
+    constructor (props: PaginationProps) {
         super(props);
 
         // Warnings
@@ -146,9 +145,9 @@ export default class Pagination extends PureComponent {
 
         const style = [
             styles.sliderPagination,
-            { flexDirection: vertical ?
+            { flexDirection: (vertical ?
                 'column' :
-                (this._needsRTLAdaptations() ? 'row-reverse' : 'row')
+                (this._needsRTLAdaptations() ? 'row-reverse' : 'row')) as 'row' | 'column' | 'row-reverse' | 'column-reverse'
             },
             containerStyle || {}
         ];
